@@ -21,11 +21,11 @@ This repository contains source codes for the paper "Unseen Object Amodal Instan
 
 ### Environment Setup
 
-Tested on Titan RTX with python 3.7, pytorch 1.8.0, torchvision==0.9.0, CUDA 10.2.
+Tested on Titan RTX with python 3.7, pytorch 1.8.0, torchvision 0.9.0, CUDA 10.2.
 
 1. Download
 ```
-https://github.com/gist-ailab/uoais.git
+git clone https://github.com/gist-ailab/uoais.git
 cd uoais
 mkdir output
 ```
