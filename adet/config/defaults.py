@@ -1,0 +1,447 @@
+from detectron2.config.defaults import _C
+from detectron2.config import CfgNode as CN
+
+
+# ---------------------------------------------------------------------------- #
+# Additional Custom Configs
+# ---------------------------------------------------------------------------- #
+_C.SOLVER.CHECKPOINT_PERIOD = 10000
+
+
+## input
+_C.INPUT.MASK_FORMAT = "rle"
+_C.INPUT.AMODAL = False
+_C.INPUT.IMG_SIZE = [640, 480]
+_C.INPUT.RECOMPUTE_BOXES = True
+_C.INPUT.COLOR_AUGMENTATION = False
+_C.INPUT.DEPTH = False
+_C.INPUT.DEPTH_ONLY = False
+_C.INPUT.DEPTH_RANGE = [2500, 15000] # mm
+_C.INPUT.CROP_RATIO = 0.5
+_C.INPUT.PERLIN_DISTORTION = False
+_C.INPUT.MAX_SIZE_TRAIN = 640
+_C.INPUT.MAX_SIZE_TEST = 640
+_C.INPUT.MIN_SIZE_TRAIN = (480,)
+_C.INPUT.MIN_SIZE_TEST = 480
+_C.TEST.ENABLED = False
+_C.TEST.FLIP = False
+_C.TEST.MAX_SIZE = 640
+
+_C.SEED = 7
+
+_C.MODEL.ROI_MASK_HEAD.CLS_AGNOSTIC_MASK = False
+
+# RGB-D Fusion
+_C.MODEL.RESNETS.DEPTH_OUT_FEATURES = ["res_2", "res_3", "res_4", "res_5"]
+_C.MODEL.RGBD_FUSION = "none"
+_C.MODEL.FUSE_TYPE = "none"
+_C.MODEL.DEPTH2RGB_GUIDANCE = False
+_C.MODEL.SPA_ATT_ONLY = False
+
+
+# ORCNN
+_C.MODEL.CROSS_CHECK = False
+# ASN
+_C.MODEL.OCC_CLS_AT_BOX = False
+_C.MODEL.MULTI_LEVEL_CODING = False
+# UASNet
+_C.MODEL.OCC_CLS_AT_MASK = False
+_C.MODEL.HIERARCHCIAL_OCCLUSION_MODELING = False
+_C.MODEL.PREDICTION_ORDER = ["V", "A", "O"]
+_C.MODEL.GUIDANCE_TYPE = "add"
+_C.MODEL.NO_DENSE_GUIDANCE = False
+
+
+
+
+_C.MODEL.FOCAL_OCC = False
+_C.TEST.EVAL_TARGET = ["amodal_visible"]
+
+_C.MODEL.SWINT = CN()
+_C.MODEL.SWINT.EMBED_DIM = 96
+_C.MODEL.SWINT.OUT_FEATURES = ["stage2", "stage3", "stage4", "stage5"]
+_C.MODEL.SWINT.DEPTHS = [2, 2, 6, 2]
+_C.MODEL.SWINT.NUM_HEADS = [3, 6, 12, 24]
+_C.MODEL.SWINT.WINDOW_SIZE = 7
+_C.MODEL.SWINT.MLP_RATIO = 4
+_C.MODEL.SWINT.DROP_PATH_RATE = 0.2
+_C.MODEL.SWINT.APE = False
+_C.MODEL.BACKBONE.FREEZE_AT = -1
+_C.MODEL.FPN.TOP_LEVELS = 2
+
+
+
+# Occlusion Modeling
+_C.MODEL.UASNET = CN()
+
+_C.MODEL.UASNET.FUSE_TYPE = "conv" # conv or add
+_C.MODEL.UASNET.NUM_FUSE_CONV = 3 # conv or add
+_C.MODEL.UASNET.PRED_MASK_TARGETS = ["visible", "amodal"]
+_C.MODEL.UASNET.DENSE_FUSION = False
+
+
+_C.MODEL.UASNET.ROI_MASK_HEAD = CN()
+_C.MODEL.UASNET.ROI_MASK_HEAD.CONV_DIM = 256
+_C.MODEL.UASNET.ROI_MASK_HEAD.NORM = None
+_C.MODEL.UASNET.ROI_MASK_HEAD.NUM_CONV = 4
+_C.MODEL.UASNET.PIXEL_WISE_OCCLUSION = False
+_C.MODEL.UASNET.LOSS_WEIGHT_PIXEL_WISE_OCCLUSION = 0.2
+_C.MODEL.UASNET.VIS2AM_ATTENTION = False
+_C.MODEL.UASNET.DICE_LOSS = False
+_C.MODEL.UASNET.NO_SQRT = False
+_C.MODEL.UASNET.HTAN = False
+
+
+_C.MODEL.ROI_VISIBLE_MASK_HEAD = CN()
+_C.MODEL.ROI_VISIBLE_MASK_HEAD.NAME = "VisibleMaskRCNNConvUpsampleHead"
+_C.MODEL.ROI_VISIBLE_MASK_HEAD.ASSIGN_CRITERION = "ratio"
+_C.MODEL.ROI_VISIBLE_MASK_HEAD.NUM_CONV = 4
+_C.MODEL.ROI_VISIBLE_MASK_HEAD.CONV_DIM = 256
+_C.MODEL.ROI_VISIBLE_MASK_HEAD.POOLER_RESOLUTION = 14
+_C.MODEL.ROI_VISIBLE_MASK_HEAD.NORM = None
+_C.MODEL.ROI_VISIBLE_MASK_HEAD.CLS_AGNOSTIC_MASK = False
+
+
+_C.MODEL.EDGE_DETECTION = False
+_C.MODEL.CLS_AGNOSTIC_EDGE = False
+_C.MODEL.ROI_EDGE_DETECTION_HEAD = CN()
+_C.MODEL.ROI_EDGE_DETECTION_HEAD.NAME = "EdgeDetectionHead"
+_C.MODEL.ROI_EDGE_DETECTION_HEAD.POOLER_RESOLUTION = 14
+_C.MODEL.ROI_EDGE_DETECTION_HEAD.NUM_CONV = 2
+_C.MODEL.ROI_EDGE_DETECTION_HEAD.CONV_DIM = 256
+_C.MODEL.ROI_EDGE_DETECTION_HEAD.POOLER_SAMPLING_RATIO = 0
+_C.MODEL.ROI_EDGE_DETECTION_HEAD.POOLER_TYPE = "ROIAlignV2"
+_C.MODEL.ROI_EDGE_DETECTION_HEAD.NORM = None
+_C.MODEL.ROI_EDGE_DETECTION_HEAD.LOSS_WEIGHT = 1.0
+
+# ---------------------------------------------------------------------------- #
+# Additional Configs
+# ---------------------------------------------------------------------------- #
+_C.MODEL.MOBILENET = False
+_C.MODEL.BACKBONE.ANTI_ALIAS = False
+_C.MODEL.RESNETS.DEFORM_INTERVAL = 1
+_C.INPUT.HFLIP_TRAIN = False
+_C.INPUT.CROP.CROP_INSTANCE = False
+_C.INPUT.RANDOM_FLIP = "none"
+
+# ---------------------------------------------------------------------------- #
+# FCOS Head
+# ---------------------------------------------------------------------------- #
+_C.MODEL.FCOS = CN()
+
+# This is the number of foreground classes.
+_C.MODEL.FCOS.NUM_CLASSES = 80
+_C.MODEL.FCOS.IN_FEATURES = ["p3", "p4", "p5", "p6", "p7"]
+_C.MODEL.FCOS.FPN_STRIDES = [8, 16, 32, 64, 128]
+_C.MODEL.FCOS.PRIOR_PROB = 0.01
+_C.MODEL.FCOS.INFERENCE_TH_TRAIN = 0.05
+_C.MODEL.FCOS.INFERENCE_TH_TEST = 0.05
+_C.MODEL.FCOS.NMS_TH = 0.6
+_C.MODEL.FCOS.PRE_NMS_TOPK_TRAIN = 1000
+_C.MODEL.FCOS.PRE_NMS_TOPK_TEST = 1000
+_C.MODEL.FCOS.POST_NMS_TOPK_TRAIN = 100
+_C.MODEL.FCOS.POST_NMS_TOPK_TEST = 100
+_C.MODEL.FCOS.TOP_LEVELS = 2
+_C.MODEL.FCOS.NORM = "GN"  # Support GN or none
+_C.MODEL.FCOS.USE_SCALE = True
+
+# The options for the quality of box prediction
+# It can be "ctrness" (as described in FCOS paper) or "iou"
+# Using "iou" here generally has ~0.4 better AP on COCO
+# Note that for compatibility, we still use the term "ctrness" in the code
+_C.MODEL.FCOS.BOX_QUALITY = "ctrness"
+
+# Multiply centerness before threshold
+# This will affect the final performance by about 0.05 AP but save some time
+_C.MODEL.FCOS.THRESH_WITH_CTR = False
+_C.MODEL.FCOS.THRESH_WITH_OCCLUDEDNESS = False
+_C.MODEL.FCOS.THRESH_WITH_OCCLUSION_OCCLUDEDNESS = False
+
+# Focal loss parameters
+_C.MODEL.FCOS.LOSS_ALPHA = 0.25
+_C.MODEL.FCOS.LOSS_GAMMA = 2.0
+
+# The normalizer of the classification loss
+# The normalizer can be "fg" (normalized by the number of the foreground samples),
+# "moving_fg" (normalized by the MOVING number of the foreground samples),
+# or "all" (normalized by the number of all samples)
+_C.MODEL.FCOS.LOSS_NORMALIZER_CLS = "fg"
+_C.MODEL.FCOS.LOSS_WEIGHT_CLS = 1.0
+
+_C.MODEL.FCOS.SIZES_OF_INTEREST = [64, 128, 256, 512]
+_C.MODEL.FCOS.USE_RELU = True
+_C.MODEL.FCOS.USE_DEFORMABLE = False
+
+
+# the number of convolutions used in the cls and bbox tower
+_C.MODEL.FCOS.NUM_CLS_CONVS = 4
+_C.MODEL.FCOS.NUM_BOX_CONVS = 4
+_C.MODEL.FCOS.NUM_SHARE_CONVS = 0
+_C.MODEL.FCOS.CENTER_SAMPLE = True
+_C.MODEL.FCOS.POS_RADIUS = 1.5
+_C.MODEL.FCOS.LOC_LOSS_TYPE = 'giou'
+_C.MODEL.FCOS.YIELD_PROPOSAL = False
+
+# ---------------------------------------------------------------------------- #
+# VoVNet backbone
+# ---------------------------------------------------------------------------- #
+_C.MODEL.VOVNET = CN()
+_C.MODEL.VOVNET.CONV_BODY = "V-39-eSE"
+_C.MODEL.VOVNET.OUT_FEATURES = ["stage2", "stage3", "stage4", "stage5"]
+
+# Options: FrozenBN, GN, "SyncBN", "BN"
+_C.MODEL.VOVNET.NORM = "FrozenBN"
+_C.MODEL.VOVNET.OUT_CHANNELS = 256
+_C.MODEL.VOVNET.BACKBONE_OUT_CHANNELS = 256
+
+# ---------------------------------------------------------------------------- #
+# DLA backbone
+# ---------------------------------------------------------------------------- #
+
+_C.MODEL.DLA = CN()
+_C.MODEL.DLA.CONV_BODY = "DLA34"
+_C.MODEL.DLA.OUT_FEATURES = ["stage2", "stage3", "stage4", "stage5"]
+
+# Options: FrozenBN, GN, "SyncBN", "BN"
+_C.MODEL.DLA.NORM = "FrozenBN"
+
+# ---------------------------------------------------------------------------- #
+# BAText Options
+# ---------------------------------------------------------------------------- #
+_C.MODEL.BATEXT = CN()
+_C.MODEL.BATEXT.VOC_SIZE = 96
+_C.MODEL.BATEXT.NUM_CHARS = 25
+_C.MODEL.BATEXT.POOLER_RESOLUTION = (8, 32)
+_C.MODEL.BATEXT.IN_FEATURES = ["p2", "p3", "p4"]
+_C.MODEL.BATEXT.POOLER_SCALES = (0.25, 0.125, 0.0625)
+_C.MODEL.BATEXT.SAMPLING_RATIO = 1
+_C.MODEL.BATEXT.CONV_DIM = 256
+_C.MODEL.BATEXT.NUM_CONV = 2
+_C.MODEL.BATEXT.RECOGNITION_LOSS = "ctc"
+_C.MODEL.BATEXT.RECOGNIZER = "attn"
+_C.MODEL.BATEXT.CANONICAL_SIZE = 96  # largest min_size for level 3 (stride=8)
+
+# ---------------------------------------------------------------------------- #
+# BlendMask Options
+# ---------------------------------------------------------------------------- #
+_C.MODEL.BLENDMASK = CN()
+_C.MODEL.BLENDMASK.ATTN_SIZE = 14
+_C.MODEL.BLENDMASK.TOP_INTERP = "bilinear"
+_C.MODEL.BLENDMASK.BOTTOM_RESOLUTION = 56
+_C.MODEL.BLENDMASK.POOLER_TYPE = "ROIAlignV2"
+_C.MODEL.BLENDMASK.POOLER_SAMPLING_RATIO = 1
+_C.MODEL.BLENDMASK.POOLER_SCALES = (0.25,)
+_C.MODEL.BLENDMASK.INSTANCE_LOSS_WEIGHT = 1.0
+_C.MODEL.BLENDMASK.VISUALIZE = False
+
+# ---------------------------------------------------------------------------- #
+# Basis Module Options
+# ---------------------------------------------------------------------------- #
+_C.MODEL.BASIS_MODULE = CN()
+_C.MODEL.BASIS_MODULE.NAME = "ProtoNet"
+_C.MODEL.BASIS_MODULE.NUM_BASES = 4
+_C.MODEL.BASIS_MODULE.LOSS_ON = False
+_C.MODEL.BASIS_MODULE.ANN_SET = "coco"
+_C.MODEL.BASIS_MODULE.CONVS_DIM = 128
+_C.MODEL.BASIS_MODULE.IN_FEATURES = ["p3", "p4", "p5"]
+_C.MODEL.BASIS_MODULE.NORM = "SyncBN"
+_C.MODEL.BASIS_MODULE.NUM_CONVS = 3
+_C.MODEL.BASIS_MODULE.COMMON_STRIDE = 8
+_C.MODEL.BASIS_MODULE.NUM_CLASSES = 80
+_C.MODEL.BASIS_MODULE.LOSS_WEIGHT = 0.3
+
+# ---------------------------------------------------------------------------- #
+# MEInst Head
+# ---------------------------------------------------------------------------- #
+_C.MODEL.MEInst = CN()
+
+# This is the number of foreground classes.
+_C.MODEL.MEInst.NUM_CLASSES = 80
+_C.MODEL.MEInst.IN_FEATURES = ["p3", "p4", "p5", "p6", "p7"]
+_C.MODEL.MEInst.FPN_STRIDES = [8, 16, 32, 64, 128]
+_C.MODEL.MEInst.PRIOR_PROB = 0.01
+_C.MODEL.MEInst.INFERENCE_TH_TRAIN = 0.05
+_C.MODEL.MEInst.INFERENCE_TH_TEST = 0.05
+_C.MODEL.MEInst.NMS_TH = 0.6
+_C.MODEL.MEInst.PRE_NMS_TOPK_TRAIN = 1000
+_C.MODEL.MEInst.PRE_NMS_TOPK_TEST = 1000
+_C.MODEL.MEInst.POST_NMS_TOPK_TRAIN = 100
+_C.MODEL.MEInst.POST_NMS_TOPK_TEST = 100
+_C.MODEL.MEInst.TOP_LEVELS = 2
+_C.MODEL.MEInst.NORM = "GN"  # Support GN or none
+_C.MODEL.MEInst.USE_SCALE = True
+
+# Multiply centerness before threshold
+# This will affect the final performance by about 0.05 AP but save some time
+_C.MODEL.MEInst.THRESH_WITH_CTR = False
+
+# Focal loss parameters
+_C.MODEL.MEInst.LOSS_ALPHA = 0.25
+_C.MODEL.MEInst.LOSS_GAMMA = 2.0
+_C.MODEL.MEInst.SIZES_OF_INTEREST = [64, 128, 256, 512]
+_C.MODEL.MEInst.USE_RELU = True
+_C.MODEL.MEInst.USE_DEFORMABLE = False
+_C.MODEL.MEInst.LAST_DEFORMABLE = False
+_C.MODEL.MEInst.TYPE_DEFORMABLE = "DCNv1"  # or DCNv2.
+
+# the number of convolutions used in the cls and bbox tower
+_C.MODEL.MEInst.NUM_CLS_CONVS = 4
+_C.MODEL.MEInst.NUM_BOX_CONVS = 4
+_C.MODEL.MEInst.NUM_SHARE_CONVS = 0
+_C.MODEL.MEInst.CENTER_SAMPLE = True
+_C.MODEL.MEInst.POS_RADIUS = 1.5
+_C.MODEL.MEInst.LOC_LOSS_TYPE = 'giou'
+
+# ---------------------------------------------------------------------------- #
+# Mask Encoding
+# ---------------------------------------------------------------------------- #
+# Whether to use mask branch.
+_C.MODEL.MEInst.MASK_ON = True
+# IOU overlap ratios [IOU_THRESHOLD]
+# Overlap threshold for an RoI to be considered background (if < IOU_THRESHOLD)
+# Overlap threshold for an RoI to be considered foreground (if >= IOU_THRESHOLD)
+_C.MODEL.MEInst.IOU_THRESHOLDS = [0.5]
+_C.MODEL.MEInst.IOU_LABELS = [0, 1]
+# Whether to use class_agnostic or class_specific.
+_C.MODEL.MEInst.AGNOSTIC = True
+# Some operations in mask encoding.
+_C.MODEL.MEInst.WHITEN = True
+_C.MODEL.MEInst.SIGMOID = True
+
+# The number of convolutions used in the mask tower.
+_C.MODEL.MEInst.NUM_MASK_CONVS = 4
+
+# The dim of mask before/after mask encoding.
+_C.MODEL.MEInst.DIM_MASK = 60
+_C.MODEL.MEInst.MASK_SIZE = 28
+# The default path for parameters of mask encoding.
+_C.MODEL.MEInst.PATH_COMPONENTS = "datasets/coco/components/" \
+                                   "coco_2017_train_class_agnosticTrue_whitenTrue_sigmoidTrue_60.npz"
+# An indicator for encoding parameters loading during training.
+_C.MODEL.MEInst.FLAG_PARAMETERS = False
+# The loss for mask branch, can be mse now.
+_C.MODEL.MEInst.MASK_LOSS_TYPE = "mse"
+
+# Whether to use gcn in mask prediction.
+# Large Kernel Matters -- https://arxiv.org/abs/1703.02719
+_C.MODEL.MEInst.USE_GCN_IN_MASK = False
+_C.MODEL.MEInst.GCN_KERNEL_SIZE = 9
+# Whether to compute loss on original mask (binary mask).
+_C.MODEL.MEInst.LOSS_ON_MASK = False
+
+# ---------------------------------------------------------------------------- #
+# CondInst Options
+# ---------------------------------------------------------------------------- #
+_C.MODEL.CONDINST = CN()
+
+# the downsampling ratio of the final instance masks to the input image
+_C.MODEL.CONDINST.MASK_OUT_STRIDE = 4
+_C.MODEL.CONDINST.BOTTOM_PIXELS_REMOVED = -1
+
+# if not -1, we only compute the mask loss for MAX_PROPOSALS random proposals PER GPU
+_C.MODEL.CONDINST.MAX_PROPOSALS = -1
+# if not -1, we only compute the mask loss for top `TOPK_PROPOSALS_PER_IM` proposals
+# PER IMAGE in terms of their detection scores
+_C.MODEL.CONDINST.TOPK_PROPOSALS_PER_IM = -1
+
+_C.MODEL.CONDINST.MASK_HEAD = CN()
+_C.MODEL.CONDINST.MASK_HEAD.CHANNELS = 8
+_C.MODEL.CONDINST.MASK_HEAD.NUM_LAYERS = 3
+_C.MODEL.CONDINST.MASK_HEAD.USE_FP16 = False
+_C.MODEL.CONDINST.MASK_HEAD.DISABLE_REL_COORDS = False
+
+_C.MODEL.CONDINST.MASK_BRANCH = CN()
+_C.MODEL.CONDINST.MASK_BRANCH.OUT_CHANNELS = 8
+_C.MODEL.CONDINST.MASK_BRANCH.IN_FEATURES = ["p3", "p4", "p5"]
+_C.MODEL.CONDINST.MASK_BRANCH.CHANNELS = 128
+_C.MODEL.CONDINST.MASK_BRANCH.NORM = "BN"
+_C.MODEL.CONDINST.MASK_BRANCH.NUM_CONVS = 4
+_C.MODEL.CONDINST.MASK_BRANCH.SEMANTIC_LOSS_ON = False
+
+# The options for BoxInst, which can train the instance segmentation model with box annotations only
+# Please refer to the paper https://arxiv.org/abs/2012.02310
+_C.MODEL.BOXINST = CN()
+# Whether to enable BoxInst
+_C.MODEL.BOXINST.ENABLED = False
+_C.MODEL.BOXINST.BOTTOM_PIXELS_REMOVED = 10
+
+_C.MODEL.BOXINST.PAIRWISE = CN()
+_C.MODEL.BOXINST.PAIRWISE.SIZE = 3
+_C.MODEL.BOXINST.PAIRWISE.DILATION = 2
+_C.MODEL.BOXINST.PAIRWISE.WARMUP_ITERS = 10000
+_C.MODEL.BOXINST.PAIRWISE.COLOR_THRESH = 0.3
+
+# ---------------------------------------------------------------------------- #
+# TOP Module Options
+# ---------------------------------------------------------------------------- #
+_C.MODEL.TOP_MODULE = CN()
+_C.MODEL.TOP_MODULE.NAME = "conv"
+_C.MODEL.TOP_MODULE.DIM = 16
+
+# ---------------------------------------------------------------------------- #
+# BiFPN options
+# ---------------------------------------------------------------------------- #
+
+_C.MODEL.BiFPN = CN()
+# Names of the input feature maps to be used by BiFPN
+# They must have contiguous power of 2 strides
+# e.g., ["res2", "res3", "res4", "res5"]
+_C.MODEL.BiFPN.IN_FEATURES = ["res2", "res3", "res4", "res5"]
+_C.MODEL.BiFPN.OUT_CHANNELS = 160
+_C.MODEL.BiFPN.NUM_REPEATS = 6
+
+# Options: "" (no norm), "GN"
+_C.MODEL.BiFPN.NORM = ""
+
+# ---------------------------------------------------------------------------- #
+# SOLOv2 Options
+# ---------------------------------------------------------------------------- #
+_C.MODEL.SOLOV2 = CN()
+
+# Instance hyper-parameters
+_C.MODEL.SOLOV2.INSTANCE_IN_FEATURES = ["p2", "p3", "p4", "p5", "p6"]
+_C.MODEL.SOLOV2.FPN_INSTANCE_STRIDES = [8, 8, 16, 32, 32]
+_C.MODEL.SOLOV2.FPN_SCALE_RANGES = ((1, 96), (48, 192), (96, 384), (192, 768), (384, 2048))
+_C.MODEL.SOLOV2.SIGMA = 0.2
+# Channel size for the instance head.
+_C.MODEL.SOLOV2.INSTANCE_IN_CHANNELS = 256
+_C.MODEL.SOLOV2.INSTANCE_CHANNELS = 512
+# Convolutions to use in the instance head.
+_C.MODEL.SOLOV2.NUM_INSTANCE_CONVS = 4
+_C.MODEL.SOLOV2.USE_DCN_IN_INSTANCE = False
+_C.MODEL.SOLOV2.TYPE_DCN = 'DCN'
+_C.MODEL.SOLOV2.NUM_GRIDS = [40, 36, 24, 16, 12]
+# Number of foreground classes.
+_C.MODEL.SOLOV2.NUM_CLASSES = 80
+_C.MODEL.SOLOV2.NUM_KERNELS = 256
+_C.MODEL.SOLOV2.NORM = "GN"
+_C.MODEL.SOLOV2.USE_COORD_CONV = True
+_C.MODEL.SOLOV2.PRIOR_PROB = 0.01
+
+# Mask hyper-parameters.
+# Channel size for the mask tower.
+_C.MODEL.SOLOV2.MASK_IN_FEATURES = ["p2", "p3", "p4", "p5"]
+_C.MODEL.SOLOV2.MASK_IN_CHANNELS = 256
+_C.MODEL.SOLOV2.MASK_CHANNELS = 128
+_C.MODEL.SOLOV2.NUM_MASKS = 256
+
+# Test cfg.
+_C.MODEL.SOLOV2.NMS_PRE = 500
+_C.MODEL.SOLOV2.SCORE_THR = 0.1
+_C.MODEL.SOLOV2.UPDATE_THR = 0.05
+_C.MODEL.SOLOV2.MASK_THR = 0.5
+_C.MODEL.SOLOV2.MAX_PER_IMG = 100
+# NMS type: matrix OR mask.
+_C.MODEL.SOLOV2.NMS_TYPE = "matrix"
+# Matrix NMS kernel type: gaussian OR linear.
+_C.MODEL.SOLOV2.NMS_KERNEL = "gaussian"
+_C.MODEL.SOLOV2.NMS_SIGMA = 2
+
+# Loss cfg.
+_C.MODEL.SOLOV2.LOSS = CN()
+_C.MODEL.SOLOV2.LOSS.FOCAL_USE_SIGMOID = True
+_C.MODEL.SOLOV2.LOSS.FOCAL_ALPHA = 0.25
+_C.MODEL.SOLOV2.LOSS.FOCAL_GAMMA = 2.0
+_C.MODEL.SOLOV2.LOSS.FOCAL_WEIGHT = 1.0
+_C.MODEL.SOLOV2.LOSS.DICE_WEIGHT = 3.0
+_C.MODEL.SOLOV2.LOSS.CROSS_CHECK_WEIGHT = 1.0
