@@ -12,9 +12,10 @@ This repository contains source codes for the paper "Unseen Object Amodal Instan
 
 ## Updates & TODO Lists
 - [X] (2021.09.26) UOAIS-Net has been released 
+- [X] (2021.11.15) inference codes for kinect azure and OSD dataset.
 - [ ] Add train and evaluation code
 - [ ] Release synthetic dataset (UOAIS-Sim) and amodal annotation (OSD-Amodal)
-- [ ] Add ROS inference node
+- [ ] Add ROS inference node (kinect azure, realsense)
 
 
 ## Getting Started
@@ -29,7 +30,12 @@ git clone https://github.com/gist-ailab/uoais.git
 cd uoais
 mkdir output
 ```
-Download the checkpoint at [GDrive](https://drive.google.com/drive/folders/1D5hHFDtgd5RnX__55MmpfOAM83qdGYf0?usp=sharing) and move the downloaded folders to the `output` folder
+Download the checkpoint at [GDrive](https://drive.google.com/drive/folders/1D5hHFDtgd5RnX__55MmpfOAM83qdGYf0?usp=sharing) 
+
+Move the `R50_depth_mlc_occatmask_hom_concat` and `R50_rgbdconcat_mlc_occatmask_hom_concat` to the `output` folder.
+
+Move the `rgbd_fg.pth` to the `foreground_segmentation` folder
+
 
 2. Set up a python environment
 ```
@@ -44,14 +50,44 @@ pip install shapely torchfile opencv-python pyfastnoisesimd rapidfuzz
 python setup.py build develop 
 ```
 
-### Run with Sample Data
+### Run on sample OSD dataset
 
-UOAIS-Net (RGB-D)
+<img src="./imgs/demo.png" height="200">
+
 ```
-python tools/run_sample_data.py
+# UOAIS-Net (RGB-D) + Foreground Segmentation
+python tools/run_on_OSD.py --use-fg --dataset-path ./sample_data --config-file configs/R50_rgbdconcat_mlc_occatmask_hom_concat.yaml
+# UOAIS-Net (depth) + Foreground Segmentation
+python tools/run_on_OSD.py --use-fg --dataset-path ./sample_data  --config-file configs/R50_depth_mlc_occatmask_hom_concat.yaml
+# UOAIS-Net (RGB-D)
+python tools/run_on_OSD.py --dataset-path ./sample_data --config-file configs/R50_rgbdconcat_mlc_occatmask_hom_concat.yaml
+# UOAIS-Net (depth)
+python tools/run_on_OSD.py --dataset-path ./sample_data --config-file configs/R50_depth_mlc_occatmask_hom_concat.yaml
 ```
 
-<img src="./imgs/sample_0.png" height="200">
+
+### Run on full OSD dataset
+
+Download `OSD-0.2-depth.zip` at [OSD](https://www.acin.tuwien.ac.at/vision-for-robotics/software-tools/osd/) and extract it.
+```
+python tools/run_on_OSD.py --use-fg --dataset-path {OSD dataset path} --config-file configs/R50_rgbdconcat_mlc_occatmask_hom_concat.yaml
+```
+
+
+### Run with Kinect Azure
+
+[Azure-Kinect-Sensor-SDK](https://github.com/microsoft/Azure-Kinect-Sensor-SDK) and [pyk4a](https://github.com/etiennedub/pyk4a) are required.
+
+```
+# UOAIS-Net (RGB-D) + Foreground Segmentation
+python tools/k4a_demo.py --use-fg --config-file configs/R50_rgbdconcat_mlc_occatmask_hom_concat.yaml
+UOAIS-Net (depth) + Foreground Segmentation 
+python tools/k4a_demo.py --use-fg --config-file configs/R50_depth_mlc_occatmask_hom_concat.yaml
+# UOAIS-Net (RGB-D)
+python tools/k4a_demo.py --config-file configs/R50_rgbdconcat_mlc_occatmask_hom_concat.yaml
+# UOAIS-Net (depth)
+python tools/k4a_demo.py --config-file configs/R50_depth_mlc_occatmask_hom_concat.yaml
+```
 
 ## License
 
