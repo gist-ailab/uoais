@@ -57,9 +57,9 @@ python setup.py build develop
 
 ```
 # UOAIS-Net (RGB-D) + Foreground Segmentation
-python tools/run_on_OSD.py --use-fg --dataset-path ./sample_data --config-file configs/R50_rgbdconcat_mlc_occatmask_hom_concat.yaml
+python tools/run_on_OSD.py --use-cgnet --dataset-path ./sample_data --config-file configs/R50_rgbdconcat_mlc_occatmask_hom_concat.yaml
 # UOAIS-Net (depth) + Foreground Segmentation
-python tools/run_on_OSD.py --use-fg --dataset-path ./sample_data  --config-file configs/R50_depth_mlc_occatmask_hom_concat.yaml
+python tools/run_on_OSD.py --use-cgnet --dataset-path ./sample_data  --config-file configs/R50_depth_mlc_occatmask_hom_concat.yaml
 # UOAIS-Net (RGB-D)
 python tools/run_on_OSD.py --dataset-path ./sample_data --config-file configs/R50_rgbdconcat_mlc_occatmask_hom_concat.yaml
 # UOAIS-Net (depth)
