@@ -32,12 +32,12 @@ def get_parser():
         help="Minimum score for instance predictions to be shown",
     )
     parser.add_argument(
-        "--use-fg",
+        "--use-cgnet",
         action="store_true",
         help="Use foreground segmentation model to filter our background instances or not"
     )
     parser.add_argument(
-        "--fg-weight-path",
+        "--cgnet-weight-path",
         type=str,
         default="./foreground_segmentation/rgbd_fg.pth",
         help="path to forground segmentation weight"
@@ -65,9 +65,9 @@ if __name__ == "__main__":
     W, H = cfg.INPUT.IMG_SIZE
 
     # CG-Net (foreground segmentation)
-    if args.use_fg:
+    if args.use_cgnet:
         print("Use foreground segmentation model (CG-Net) to filter out background instances")
-        checkpoint = torch.load(os.path.join(args.fg_weight_path))
+        checkpoint = torch.load(os.path.join(args.cgnet_weight_path))
         fg_model = Context_Guided_Network(classes=2, in_channel=4)
         fg_model.load_state_dict(checkpoint['model'])
         fg_model.cuda()
@@ -95,7 +95,7 @@ if __name__ == "__main__":
         instances = detector_postprocess(outputs['instances'], H, W).to('cpu')
 
         # CG-Net inference
-        if args.use_fg:
+        if args.use_cgnet:
             fg_rgb_input = standardize_image(cv2.resize(rgb_img, (320, 240)))
             fg_rgb_input = array_to_tensor(fg_rgb_input).unsqueeze(0)
             fg_depth_input = cv2.resize(depth_img, (320, 240)) 
@@ -112,7 +112,7 @@ if __name__ == "__main__":
         pred_occs = instances.pred_occlusions.detach().cpu().numpy() 
         
         # filter out the background instances
-        if args.use_fg:
+        if args.use_cgnet:
             remove_idxs = []
             for i, pred_visible in enumerate(pred_visibles):
                 iou = np.sum(np.bitwise_and(pred_visible, fg_output)) / np.sum(pred_visible)
