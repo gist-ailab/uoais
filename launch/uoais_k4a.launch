@@ -8,7 +8,7 @@
     <!-- aligned depth to rgb topic -->
     <arg name="depth" default="/depth_to_rgb/image_raw"/>
     <!-- camera info topic -->
-    <arg name="camera_info" default="/camerargb/camera_info"/>
+    <arg name="camera_info" default="/camera/rgb/camera_info"/>
 
   <!-- UOAIS-Net configurations -->
     <arg name="config_file" default="configs/R50_rgbdconcat_mlc_occatmask_hom_concat.yaml" />
