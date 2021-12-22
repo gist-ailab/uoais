@@ -95,10 +95,8 @@ class COCO:
         imgToAnns,catToImgs = defaultdict(list),defaultdict(list)
         if 'annotations' in self.dataset:
             for ann in self.dataset['annotations']:
-                if "occlude_rate" in ann.keys():
-                    ann['area'] = 1 - ann['occlude_rate']
-                elif "inmodal_seg" in ann.keys():
-                    ann['area'] = maskUtils.area(ann['inmodal_seg']) / ann['area']
+                if "occluded_rate" in ann.keys():
+                    ann['area'] = ann["area"]*ann['occluded_rate']
                 imgToAnns[ann['image_id']].append(ann)
                 anns[ann['id']] = ann
 

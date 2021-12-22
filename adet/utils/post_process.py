@@ -64,26 +64,11 @@ def detector_postprocess(results, output_height, output_width, mask_threshold=0.
         )
     elif results.has("pred_visible_masks"):
         results.pred_occluded_masks = torch.bitwise_xor(results.pred_masks, results.pred_visible_masks)
-    # if torch.sum(results.pred_occlusion_masks) < 100:
-    #     results.pred_occlusion_masks = torch.zeros_like(results.pred_masks)
-
-
-    if results.has("pred_occluding_masks"):
-        results.pred_occluding_masks = paste_masks_in_image(
-            results.pred_occluding_masks[:, 0, :, :],
-            results.pred_boxes,
-            results.image_size,
-            threshold=mask_threshold,
-        )
+        for i, pred_occlusion in enumerate(results.pred_occlusions):
+            if int(pred_occlusion) == 0:
+                results.pred_occluded_masks[i] = torch.zeros_like(results.pred_occluded_masks[i])
         
-    if results.has("pred_bo_masks"):
-        results.pred_bo_masks = paste_masks_in_image(
-            results.pred_bo_masks[:, 0, :, :],
-            results.pred_boxes,
-            results.image_size,
-            threshold=mask_threshold,
-        )
-
+        
     # scale bezier points
     if results.has("beziers"):
         beziers = results.beziers

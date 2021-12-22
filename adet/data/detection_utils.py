@@ -121,16 +121,9 @@ def transform_instance_annotations(
 
     if "visible_mask" in annotation:
         annotation = transform_segm_in_anno(annotation, transforms, "visible_mask")
-
+        
     if "occluded_mask" in annotation:
         annotation = transform_segm_in_anno(annotation, transforms, "occluded_mask")
-
-    if "occluding_mask" in annotation:
-        annotation = transform_segm_in_anno(annotation, transforms, "occluding_mask")
-        
-    if "occluder_mask" in annotation:
-        annotation = transform_segm_in_anno(annotation, transforms, "occluder_mask")
-
 
         
     return annotation
@@ -175,21 +168,15 @@ def annotations_to_instances(annos, image_size, mask_format="polygon", amodal=Tr
         if amodal:
             amodal_masks = convert_to_mask([obj["segmentation"] for obj in annos])
             visible_masks = convert_to_mask([obj["visible_mask"] for obj in annos])
-            occluding_masks = convert_to_mask([obj["occluding_mask"] for obj in annos])
             occluded_masks = convert_to_mask([obj["occluded_mask"] for obj in annos])
-            occluder_masks = convert_to_mask([obj["occluder_mask"] for obj in annos])
         else:
             visible_masks = convert_to_mask([obj["visible_mask"] for obj in annos])
 
         if amodal:
             target.gt_masks = merge_bitmask(amodal_masks)
             target.gt_visible_masks = merge_bitmask(visible_masks)
-            target.gt_occluding_masks = merge_bitmask(occluding_masks)
             target.gt_occluded_masks = merge_bitmask(occluded_masks)
-            target.gt_occluder_masks = merge_bitmask(occluder_masks)
             target.gt_occluded_rate = torch.Tensor([obj["occluded_rate"] for obj in annos])
-            target.gt_occluding_rate = torch.Tensor([obj["occluding_rate"] for obj in annos])
-
         else:
             target.gt_masks = merge_bitmask(visible_masks)
             target.gt_boxes = target.gt_masks.get_bounding_boxes()

@@ -16,7 +16,6 @@ import logging
 import os
 from collections import OrderedDict
 import torch
-from torch.nn.parallel import DistributedDataParallel
 
 import detectron2.utils.comm as comm
 from detectron2.engine import DefaultTrainer, default_argument_parser, default_setup, hooks, launch
@@ -132,7 +131,7 @@ class Trainer(DefaultTrainer):
                     output_dir=output_folder,
                 )
             )
-        if evaluator_type in ["coco", "coco_panoptic_seg", "uas"]:
+        if evaluator_type in ["coco", "coco_panoptic_seg", "uoais"]:
             evaluator_list.append(COCOEvaluator(dataset_name, cfg, True, output_folder))
         if evaluator_type == "coco_panoptic_seg":
             evaluator_list.append(COCOPanopticEvaluator(dataset_name, output_folder))
@@ -291,7 +290,6 @@ if __name__ == "__main__":
     parser = default_argument_parser()
     parser.add_argument("--gpu", type=str, default="0", help="gpu id")
     args = parser.parse_args()
-    # args.config_file = "configs/FCOS/R50_1x_amodal_lfconv_mlc_pwo.yaml"
     
     os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
     print("Command Line Args:", args)

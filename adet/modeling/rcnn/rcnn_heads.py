@@ -1,5 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-# Modified by Seunghyeok Back (GIST), 2021. All Rights Reserved.
+# Modified by Seunghyeok Back (GIST), 2021. 
 
 import torch
 from torch import nn
@@ -260,7 +260,7 @@ class ORCNNROIHeads(ROIHeads):
         # ASN
         self.MLC = cfg.MODEL.MULTI_LEVEL_CODING
         self.occ_cls_at_box = cfg.MODEL.OCC_CLS_AT_BOX
-        # UASNet 
+        # UOAIS-Net 
         self.occ_cls_at_mask = cfg.MODEL.OCC_CLS_AT_MASK
         self.hom = cfg.MODEL.HIERARCHCIAL_OCCLUSION_MODELING
         self.guidance_type = cfg.MODEL.GUIDANCE_TYPE
@@ -498,8 +498,7 @@ class ORCNNROIHeads(ROIHeads):
             loss = mask_rcnn_loss(mask_logits, proposals, "gt_masks")
             losses["loss_amodal_mask"] = loss
             logits["amodal"] = mask_logits
-            # print(mask_logits.shape)
-            print(torch.sum(mask_logits.sigmoid() > 0.5)/mask_logits.shape[0]/28/28)
+
         elif pred_target == "O":
             occ_cls_logits, output_features = self.occ_cls_mask_head(input_features, proposals, box_head_features)
             gt_occludeds = []

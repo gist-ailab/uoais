@@ -4,19 +4,19 @@ from detectron2.data import DatasetCatalog, MetadataCatalog
 from detectron2.data.datasets import register_coco_instances
 
 
-from .uas import load_uas_json
+from .uoais import load_uoais_json
 
 """
 This file contains functions to register a COCO-format dataset to the DatasetCatalog.
 """
 
-__all__ = ["register_uas_instances"]
+__all__ = ["register_uoais_instances"]
 
 
 
-def register_uas_instances(name, metadata, json_file, image_root, amodal):
+def register_uoais_instances(name, metadata, json_file, image_root, amodal):
     """
-    Register a dataset in UAS's json annotation format for
+    Register a dataset in uoais's json annotation format for
     instance detection
     Args:
         name (str): the name that identifies a dataset, e.g. "d2sa_train".
@@ -26,7 +26,7 @@ def register_uas_instances(name, metadata, json_file, image_root, amodal):
         image_root (str): directory which contains all the images.
     """
     # 1. register a function which returns dicts
-    DatasetCatalog.register(name, lambda: load_uas_json(json_file, image_root, name,))
+    DatasetCatalog.register(name, lambda: load_uoais_json(json_file, image_root, name,))
     evaluator_type = "amodal" if amodal else "coco"
 
     # 2. Optionally, add metadata about this dataset,

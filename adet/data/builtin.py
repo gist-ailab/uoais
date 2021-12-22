@@ -21,27 +21,27 @@ import os
 
 from detectron2.data import MetadataCatalog, DatasetCatalog
 from .builtin_meta import _get_builtin_metadata
-from .register_uas import register_uas_instances
+from .register_uoais import register_uoais_instances
 from .register_wisdom import register_wisdom_instances
 
 
 
-_PREDEFINED_SPLITS_UAS = {
+_PREDEFINED_SPLITS_uoais = {
     
-    "uas_sim_train_amodal": ("UAS-SIM/train", "UAS-SIM/annotations/coco_anns_uas_amodal_train.json"),
-    "uas_sim_val_amodal": ("UAS-SIM/val", "UAS-SIM/annotations/coco_anns_uas_amodal_val.json"),
+    "uoais_sim_train_amodal": ("UOAIS-Sim/train", "UOAIS-Sim/annotations/coco_anns_uoais_sim_train.json"),
+    "uoais_sim_val_amodal": ("UOAIS-Sim/val", "UOAIS-Sim/annotations/coco_anns_uoais_sim_val.json"),
 }
 
 
-def register_all_uas(root="./datasets"):
-    for key, (image_root, json_file) in _PREDEFINED_SPLITS_UAS.items():
+def register_all_uoais(root="./datasets"):
+    for key, (image_root, json_file) in _PREDEFINED_SPLITS_uoais.items():
         # Assume pre-defined datasets live in `./datasets`.
         amodal = "amodal" in key
         if "occ" in key:
-            md = "uas_occ"
+            md = "uoais_occ"
         else:
-            md = "uas"
-        register_uas_instances(
+            md = "uoais"
+        register_uoais_instances(
             key,
             _get_builtin_metadata(md),
             os.path.join(root, json_file) if "://" not in json_file else json_file,
@@ -72,5 +72,5 @@ def register_all_wisdom(root="./datasets"):
 
 
 # Register them all under "./datasets"
-register_all_uas()
+register_all_uoais()
 register_all_wisdom()

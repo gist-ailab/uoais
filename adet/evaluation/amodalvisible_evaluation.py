@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+# Modified from https://github.com/YutingXiao/Amodal-Segmentation-Based-on-Visible-Region-Segmentation-and-Shape-Prior
 import contextlib
 import copy
 import io
@@ -17,7 +18,6 @@ from fvcore.common.file_io import PathManager
 
 from adet.data.amodal_datasets.pycocotools.coco import COCO
 from adet.data.amodal_datasets.pycocotools.cocoeval import COCOeval
-from adet.data.amodal_datasets.pycocotools.amodaleval import AmodalEval
 
 from tabulate import tabulate
 
@@ -120,10 +120,8 @@ class AmodalVisibleEvaluator(DatasetEvaluator):
             visible_prediction = {"image_id": input["image_id"]}
             occlusion_prediction = {"image_id": input["image_id"]}
 
-            # TODO this is ugly
             if "instances" in output:
                 instances = detector_postprocess(output["instances"], input["height"], input["width"])
-                # instances = instances.to(self._cpu_device)
                 amodal_prediction["instances"], visible_prediction["instances"], occlusion_prediction["instances"] =\
                     amodal_instances_to_coco_json(instances, input["image_id"], type="amodal")
 
@@ -234,7 +232,6 @@ class AmodalVisibleEvaluator(DatasetEvaluator):
                 f.write(json.dumps(self._occlusion_results))
                 f.flush()
 
-        self._occlusion_count()
         if not self._do_evaluation:
             self._logger.info("Annotations are not available for evaluation.")
             return
@@ -246,9 +243,7 @@ class AmodalVisibleEvaluator(DatasetEvaluator):
         for key, ann in coco_api_eval_visible.anns.items():
             coco_api_eval_visible.anns[key]["segmentation"] = coco_api_eval_visible.anns[key]["visible_mask"]
         for key, ann in coco_api_eval_visible.anns.items():
-            # coco_api_eval_occlusion.anns[key]["segmentation"] = coco_api_eval_visible.anns[key]["occluded_mask"]
-            # add only occluded instances
-            if coco_api_eval_visible.anns[key]["occluded_rate"] > 0:
+            if coco_api_eval_visible.anns[key]["occluded_rate"] > 0.05:
                 coco_api_eval_occlusion.anns[key]["segmentation"] = coco_api_eval_visible.anns[key]["occluded_mask"]
             else:
                 del coco_api_eval_occlusion.anns[key]
@@ -273,7 +268,6 @@ class AmodalVisibleEvaluator(DatasetEvaluator):
             elif task_name == "occlusion_segm":
                 task = "segm"
                 _coco_results = self._occlusion_results
-
             elif task_name == "bbox":
                 task = "bbox"
 
@@ -331,21 +325,6 @@ class AmodalVisibleEvaluator(DatasetEvaluator):
                 res[key] = float(stats["ar"].item() * 100)
         self._logger.info("Proposal metrics: \n" + create_small_table(res))
         self._results["box_proposals"] = res
-
-    def _occlusion_count(self):
-        small_occlusion = 0
-        medium_occlusion = 0
-        heavy_occlusion = 0
-        for instance in self._amodal_results:
-            if instance['area'] < 0.6:
-                heavy_occlusion += 1
-            elif instance['area'] < 0.75:
-                medium_occlusion += 1
-            elif instance['area'] < 0.9:
-                small_occlusion += 1
-        self._logger.info("number of small occlusion instances in prediction:{}".format(small_occlusion))
-        self._logger.info("number of medium occlusion instances in prediction:{}".format(medium_occlusion))
-        self._logger.info("number of heavy occlusion instances in prediction:{}".format(heavy_occlusion))
 
     def _derive_coco_results(self, coco_eval, iou_type, class_names=None):
         """
@@ -574,7 +553,6 @@ def _evaluate_box_proposals(dataset_predictions, coco_api, thresholds=None, area
     area_range = area_ranges[areas[area]]
     gt_overlaps = []
     num_pos = 0
-
     for prediction_dict in dataset_predictions:
         predictions = prediction_dict["proposals"]
 
@@ -666,7 +644,6 @@ def _evaluate_predictions_on_coco(coco_gt, coco_results, iou_type, kpt_oks_sigma
             c.pop("bbox", None)
     coco_dt = coco_gt.loadRes(coco_results)
     coco_eval = COCOeval(coco_gt, coco_dt, iou_type)
-    # coco_eval = AmodalEval(coco_gt, coco_dt)
     # Use the COCO default keypoint OKS sigmas unless overrides are specified
     if kpt_oks_sigmas:
         coco_eval.params.kpt_oks_sigmas = np.array(kpt_oks_sigmas)

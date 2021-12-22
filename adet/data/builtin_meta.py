@@ -4,9 +4,9 @@
 # All coco categories, together with their nice-looking visualization colors
 # It's from https://github.com/cocodataset/panopticapi/blob/master/panoptic_coco_categories.json
 
-def _get_uas_instances_meta():
+def _get_uoais_instances_meta():
 
-    # !TODO: modify this for UAS dataset
+    # !TODO: modify this for uoais dataset
     thing_ids = [1]
     thing_colors = [[92, 85, 25]]
     thing_dataset_id_to_contiguous_id = {k: i for i, k in enumerate(thing_ids)}
@@ -21,7 +21,7 @@ def _get_uas_instances_meta():
 
 def _get_wisdom_instances_meta():
 
-    # !TODO: modify this for UAS dataset
+    # !TODO: modify this for uoais dataset
     thing_ids = [1]
     thing_colors = [[92, 85, 25]]
     thing_dataset_id_to_contiguous_id = {k: i for i, k in enumerate(thing_ids)}
@@ -35,8 +35,8 @@ def _get_wisdom_instances_meta():
 
 
 def _get_builtin_metadata(dataset_name):
-    if dataset_name == "uas":
-        return _get_uas_instances_meta()
+    if dataset_name == "uoais":
+        return _get_uoais_instances_meta()
     elif dataset_name == "wisdom":
         return _get_wisdom_instances_meta()
     raise KeyError("No built-in metadata for dataset {}".format(dataset_name))

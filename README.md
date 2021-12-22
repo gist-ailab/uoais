@@ -7,15 +7,14 @@ This repository contains source codes for the paper "Unseen Object Amodal Instan
 
 [[Paper]](https://arxiv.org/abs/2109.11103) [[Project Website]](https://sites.google.com/view/uoais) [[Video]](https://youtu.be/rDTmXu6BhIU) 
 
-<img src="./imgs/demo.gif" height="200">
+<img src="./imgs/demo.gif" height="300">
 
 
 ## Updates & TODO Lists
 - [X] (2021.09.26) UOAIS-Net has been released 
-- [X] (2021.11.15) inference codes for kinect azure and OSD dataset.
+- [X] (2021.11.15) Inference codes for kinect azure and OSD dataset.
 - [X] (2021.11.22) ROS nodes for kinect azure and realsense D435
-- [ ] Add train and evaluation code
-- [ ] Release synthetic dataset (UOAIS-Sim) and amodal annotation (OSD-Amodal)
+- [X] (2021.12.22) Train and evaluation codes on OSD and OCID dataset + OSD-Amodal annotation
 
 
 ## Getting Started
@@ -39,12 +38,12 @@ mkdir output
 
 5. Set up a python environment
 ```
-conda create -n uoais python=3.7
+conda create -n uoais python=3.8
 conda activate uoais
 pip install torch torchvision 
-pip install shapely torchfile opencv-python pyfastnoisesimd rapidfuzz
+pip install shapely torchfile opencv-python pyfastnoisesimd rapidfuzz termcolor
 ```
-6. Install [detectron2](https://detectron2.readthedocs.io/en/latest/tutorials/install.html#install-pre-built-detectron2-linux-only)
+6. Install [detectron2](https://detectron2.readthedocs.io/en/latest/tutorials/install.html)
 
 7. Build and install custom [AdelaiDet](https://github.com/aim-uofa/AdelaiDet)
 ```
@@ -56,22 +55,14 @@ python setup.py build develop
 <img src="./imgs/demo.png" height="200">
 
 ```
-# UOAIS-Net (RGB-D) + Foreground Segmentation
+# UOAIS-Net (RGB-D) + CG-Net (foreground segmentation)
 python tools/run_on_OSD.py --use-cgnet --dataset-path ./sample_data --config-file configs/R50_rgbdconcat_mlc_occatmask_hom_concat.yaml
-# UOAIS-Net (depth) + Foreground Segmentation
+# UOAIS-Net (depth) + CG-Net (foreground segmentation)
 python tools/run_on_OSD.py --use-cgnet --dataset-path ./sample_data  --config-file configs/R50_depth_mlc_occatmask_hom_concat.yaml
 # UOAIS-Net (RGB-D)
 python tools/run_on_OSD.py --dataset-path ./sample_data --config-file configs/R50_rgbdconcat_mlc_occatmask_hom_concat.yaml
 # UOAIS-Net (depth)
 python tools/run_on_OSD.py --dataset-path ./sample_data --config-file configs/R50_depth_mlc_occatmask_hom_concat.yaml
-```
-
-
-### Run on full OSD dataset
-
-Download `OSD-0.2-depth.zip` at [OSD](https://www.acin.tuwien.ac.at/vision-for-robotics/software-tools/osd/) and extract it.
-```
-python tools/run_on_OSD.py --use-cgnet --dataset-path {OSD dataset path} --config-file configs/R50_rgbdconcat_mlc_occatmask_hom_concat.yaml
 ```
 
 
@@ -122,14 +113,85 @@ roslaunch uoais uoais_k4a.launch
 - `rgb` (`string`):  topic name of the input rgb
 - `depth` (`string`):  topic name of the input depth
 - `camera_info` (`string`):  topic name of the input camera info
-- `use_cgnet` (`bool`): use CG-Net for foreground segmentation or not
+- `use_cgnet` (`bool`): use CG-Net [1] for foreground segmentation or not 
 - `use_planeseg` (`bool`): use RANSAC for plane segmentation or not
 - `ransac_threshold` (`float`): max distance a point can be from the plane model
+
+
+
+
+## Train & Evaluation
+
+### Dataset Preparation
+
+1. Download `UOAIS-Sim.zip` and `OSD-Amodal-annotations.zip` at [GDrive](https://drive.google.com/drive/folders/1D5hHFDtgd5RnX__55MmpfOAM83qdGYf0?usp=sharing) 
+2. Download `OSD-0.2-depth.zip` at [OSD](https://www.acin.tuwien.ac.at/vision-for-robotics/software-tools/osd/). [2]
+4. Download `OCID dataset` at [OCID](https://www.acin.tuwien.ac.at/en/vision-for-robotics/software-tools/object-clutter-indoor-dataset/). [3]
+5. Extract the downloaded datasets and organize the folders as follows
+```
+uoais
+├── output
+└── datasets
+       ├── OCID-dataset # for evaluation on indoor scenes
+       │     └──ARID10
+       │     └──ARID20
+       │     └──YCB10
+       ├── OSD-0.20-depth # for evaluation on tabletop scenes
+       │     └──amodal_annotation # OSD-amodal
+       │     └──annotation
+       │     └──disparity
+       │     └──image_color
+       │     └──occlusion_annotation # OSD-amodal
+       └── UOAIS-Sim # for training
+              └──annotations
+              └──train
+              └──val
+```
+
+### Train on UOAIS-Sim
+```
+# UOAIS-Net (RGB-D) 
+python train_net.py --config-file configs/R50_rgbdconcat_mlc_occatmask_hom_concat.yaml
+# UOAIS-Net (depth) 
+python train_net.py --config-file configs/R50_depth_mlc_occatmask_hom_concat.yaml 
+```
+
+
+### Evaluation on OSD dataset
+
+```
+# UOAIS-Net (RGB-D) + CG-Net (foreground segmentation)
+python eval/eval_on_OSD.py --config-file configs/R50_rgbdconcat_mlc_occatmask_hom_concat.yaml --use-cgnet
+# UOAIS-Net (depth) + CG-Net (foreground segmentation)
+python eval/eval_on_OSD.py --config-file configs/R50_depth_mlc_occatmask_hom_concat.yaml --use-cgnet
+```
+This code evaluates the UOAIS-Net that was trained on a single seed (7), thus the metrics from this code and the paper (an average of seeds 7, 77, 777) can be different.
+
+### Evaluation on OCID dataset
+
+```
+# UOAIS-Net (RGB-D)
+python eval/eval_on_OCID.py --config-file configs/R50_rgbdconcat_mlc_occatmask_hom_concat.yaml
+# UOAIS-Net (depth)
+python eval/eval_on_OCID.py --config-file configs/R50_depth_mlc_occatmask_hom_concat.yaml
+```
+
+### Visualization on OSD dataset
+
+```
+python tools/run_on_OSD.py --use-cgnet --config-file configs/R50_rgbdconcat_mlc_occatmask_hom_concat.yaml
+```
 
 
 ## License
 
 This repository is released under the MIT license.
+
+## Notes
+
+The codes of this repository are built upon the following open sources. Thanks to the authors for sharing the code!
+- Instance segmentation based on [Detectron2](https://github.com/facebookresearch/detectron2) and [AdelaiDet](https://github.com/aim-uofa/AdelaiDet)
+- Evaluation codes are modified from [4] [UCN](https://github.com/NVlabs/UnseenObjectClustering) and [5] [VRSP-Net](https://github.com/YutingXiao/Amodal-Segmentation-Based-on-Visible-Region-Segmentation-and-Shape-Prior). 
 
 
 ## Citation
@@ -143,4 +205,13 @@ If you use our work in a research project, please cite our work:
       archivePrefix={arXiv},
       primaryClass={cs.RO}
 }
+```
+
+## References
+```
+[1] Sun, Yao, et al. "CG-Net: Conditional GIS-Aware network for individual building segmentation in VHR SAR images." IEEE Transactions on Geoscience and Remote Sensing (2021).
+[2] Richtsfeld, Andreas, et al. "Segmentation of unknown objects in indoor environments." 2012 IEEE/RSJ International Conference on Intelligent Robots and Systems. IEEE, 2012.
+[3] Suchi, Markus, et al. "EasyLabel: a semi-automatic pixel-wise object annotation tool for creating robotic RGB-D datasets." 2019 International Conference on Robotics and Automation (ICRA). IEEE, 2019.
+[4] Xiang, Yu, et al. "Learning rgb-d feature embeddings for unseen object instance segmentation." Conference on Robot Learning (CoRL). 2020.
+[5] Xiao, Yuting, et al. "Amodal Segmentation Based on Visible Region Segmentation and Shape Prior." Proceedings of the AAAI Conference on Artificial Intelligence. Vol. 35. No. 4. 2021.
 ```

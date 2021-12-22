@@ -1,3 +1,4 @@
+VERSION: 2
 MODEL:
   META_ARCHITECTURE: "GeneralizedRCNN"
   WEIGHTS: "detectron2://ImageNetPretrained/MSRA/R-50.pkl"
@@ -59,8 +60,8 @@ SOLVER:
   CLIP_GRADIENTS:
     ENABLED: True
 DATASETS:
-  TRAIN: ("uas_sim_train_amodal",)
-  TEST: ("uas_sim_val_amodal",)
+  TRAIN: ("uoais_sim_train_amodal",)
+  TEST: ("uoais_sim_val_amodal",)
     
 TEST:
   EVAL_PERIOD: 90000 # no evaluation if 0
@@ -77,3 +78,4 @@ INPUT:
   DEPTH_RANGE: [2500, 15000]
 
 OUTPUT_DIR: "output/R50_rgbdconcat_mlc_occatmask_hom_concat"
+SEED: 7

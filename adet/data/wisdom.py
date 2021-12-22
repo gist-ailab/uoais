@@ -31,7 +31,6 @@ __all__ = ["load_wisdom_json"]
 def load_wisdom_json(json_file, image_root, dataset_name=None, extra_annotation_keys=None):
     """
     Load a json file with WISDOM's instances annotation format.
-    For amodal instance segmentation, dataset_name should include the keword "amodal"
     Args:
         json_file (str): full path to the json file in UOA instances annotation format.
         image_root (str or path-like): the directory where the images in this json file exists.
@@ -195,19 +194,6 @@ Category ids in annotations are not in [1, #categories]! We'll apply a mapping f
                     num_instances_without_valid_segmentation += 1
                     continue  # ignore this instance
             obj["visible_mask"] = segm
-
-            segm = anno.get("occluding_mask", None)
-            if isinstance(segm, dict):
-                if isinstance(segm["counts"], list):
-                    # convert to compressed RLE
-                    segm = mask_util.frPyObjects(segm, *segm["size"])
-            else:
-                # filter out invalid polygons (< 3 points)
-                segm = [poly for poly in segm if len(poly) % 2 == 0 and len(poly) >= 6]
-                if len(segm) == 0:
-                    num_instances_without_valid_segmentation += 1
-                    continue  # ignore this instance
-            obj["occluding_mask"] = segm
             
             segm = anno.get("occluded_mask", None)
             if isinstance(segm, dict):
@@ -222,21 +208,7 @@ Category ids in annotations are not in [1, #categories]! We'll apply a mapping f
                     continue  # ignore this instance
             obj["occluded_mask"] = segm
             
-            segm = anno.get("occluder_mask", None)
-            if isinstance(segm, dict):
-                if isinstance(segm["counts"], list):
-                    # convert to compressed RLE
-                    segm = mask_util.frPyObjects(segm, *segm["size"])
-            else:
-                # filter out invalid polygons (< 3 points)
-                segm = [poly for poly in segm if len(poly) % 2 == 0 and len(poly) >= 6]
-                if len(segm) == 0:
-                    num_instances_without_valid_segmentation += 1
-                    continue  # ignore this instance
-            obj["occluder_mask"] = segm
-            
             obj["occluded_rate"] = anno.get("occluded_rate", None)
-            obj["occluding_rate"] = anno.get("occluding_rate", None)
 
             keypts = anno.get("keypoints", None)
             if keypts:  # list[int]

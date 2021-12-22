@@ -58,7 +58,7 @@ class COCOeval:
     # Data, paper, and tutorials available at:  http://mscoco.org/
     # Code written by Piotr Dollar and Tsung-Yi Lin, 2015.
     # Licensed under the Simplified BSD License [see coco/license.txt]
-    def __init__(self, cocoGt=None, cocoDt=None, iouType='segm', occ_eval=False):
+    def __init__(self, cocoGt=None, cocoDt=None, iouType='segm'):
         '''
         Initialize CocoEval using coco APIs for gt and dt
         :param cocoGt: coco object with ground truth annotations
@@ -81,7 +81,6 @@ class COCOeval:
         if not cocoGt is None:
             self.params.imgIds = sorted(cocoGt.getImgIds())
             self.params.catIds = sorted(cocoGt.getCatIds())
-        self.occ_eval = occ_eval
 
     def _prepare(self):
         '''
@@ -155,7 +154,6 @@ class COCOeval:
         self.ious = {(imgId, catId): computeIoU(imgId, catId) \
                         for imgId in p.imgIds
                         for catId in catIds}
-        # print(">>>>", self.ious)
         evaluateImg = self.evaluateImg
         maxDet = p.maxDets[-1]
         self.evalImgs = [evaluateImg(imgId, catId, areaRng, maxDet)
@@ -258,11 +256,7 @@ class COCOeval:
                 g['_ignore'] = 1
             else:
                 g['_ignore'] = 0
-            # if self.occ_eval and g['occluded_rate'] < 0.15:
-            #     g['_ignore'] = 1
-            
-        # print(g["_ignore"], g["area"], aRng)
-
+        
         # sort dt highest score first, sort gt ignore last
         gtind = np.argsort([g['_ignore'] for g in gt], kind='mergesort')
         gt = [gt[i] for i in gtind]
@@ -271,7 +265,6 @@ class COCOeval:
         iscrowd = [int(o['iscrowd']) for o in gt]
         # load computed ious
         ious = self.ious[imgId, catId][:, gtind] if len(self.ious[imgId, catId]) > 0 else self.ious[imgId, catId]
-        # print(">>>>>>>>>>>>>>", ious)
 
         T = len(p.iouThrs)
         G = len(gt)

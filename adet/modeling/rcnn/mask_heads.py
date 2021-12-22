@@ -1,5 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-# Modified by Seunghyeok Back (GIST), 2021. All Rights Reserved.
+# Modified by Seunghyeok Back (GIST), 2021.
 
 import fvcore.nn.weight_init as weight_init
 import torch

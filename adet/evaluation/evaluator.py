@@ -11,6 +11,7 @@ from torch import nn
 from detectron2.utils.comm import get_world_size, is_main_process
 from detectron2.utils.logger import log_every_n_seconds
 from tqdm import tqdm
+from adet.utils.post_process import detector_postprocess
 
 NUM_OCC_IMG, NUM_OCC_INST = 0, 0
 def draw_input_output(idx, inputs, outputs):
@@ -18,14 +19,13 @@ def draw_input_output(idx, inputs, outputs):
     ###########################
     # draw inputs and outputs #
     ###########################
-    from adet.utils.post_process import detector_postprocess
     import cv2
     import numpy as np
     
     for input, output in zip(inputs, outputs):
         instances = detector_postprocess(output["instances"], input["height"], input["width"])                    
         occ_pred = instances.pred_occlusions
-        save_dir = "tmp_2"
+        save_dir = "tmp"
         img = input['image'].cpu().numpy()
         rgb = img[:3].transpose(1, 2, 0)
         depth = img[3]
@@ -42,14 +42,13 @@ def draw_input_output(idx, inputs, outputs):
                 occ_sum_pred = np.zeros_like(occ, dtype=np.uint8)
             occ_sum_all = occ_sum_all + np.uint8(occ)
             if occ_pred[i] == 1:
-                occ_sum_pred = occ_sum_pred + np.uint8(occ)                            
+                occ_sum_pred = occ_sum_pred + np.uint8(occ)             
         cv2.imwrite("{}/{}_pred_occ_sum_all.png".format(save_dir, idx), occ_sum_all*50)
         cv2.imwrite("{}/{}_pred_occ_sum_pred_{}.png".format(save_dir, idx, occ_pred), occ_sum_pred*50)
         # pred - visible mask  
         occ_sum = None
         for i, occ in enumerate(instances.pred_visible_masks):
             occ = occ.detach().cpu().numpy()
-            print(i, occ.sum())
             # cv2.imwrite("{}/{}_pred_vis_{}.png".format(save_dir, idx, i), occ*255)
             if occ_sum is None:
                 occ_sum = np.zeros_like(occ, dtype=np.uint8)

@@ -16,6 +16,7 @@ from fvcore.common.file_io import PathManager
 
 from detectron2.data import MetadataCatalog, DatasetCatalog
 from tqdm import tqdm 
+import pycocotools.mask as mask_utils
 
 """
 This file contains functions to parse COCO-format annotations into dicts in "Detectron2 format".
@@ -24,7 +25,7 @@ This file contains functions to parse COCO-format annotations into dicts in "Det
 
 logger = logging.getLogger(__name__)
 
-__all__ = ["load_uas_json"]
+__all__ = ["load_uoais_json"]
 
 def load_segm(anno, type):
     segm = anno.get(type, None)
@@ -40,9 +41,9 @@ def load_segm(anno, type):
             segm = None
     return segm
 
-def load_uas_json(json_file, image_root, dataset_name=None, extra_annotation_keys=None):
+def load_uoais_json(json_file, image_root, dataset_name=None, extra_annotation_keys=None):
     """
-    Load a json file with UAS's instances annotation format.
+    Load a json file with uoais's instances annotation format.
     For amodal instance segmentation, dataset_name should include the keword "amodal"
     Args:
         json_file (str): full path to the json file in UOA instances annotation format.
@@ -185,12 +186,7 @@ Category ids in annotations are not in [1, #categories]! We'll apply a mapping f
                 obj["visible_mask"] = load_segm(anno, "visible_mask")
             if anno.get("occluded_mask", None):  
                 obj["occluded_mask"] = load_segm(anno, "occluded_mask")
-            if anno.get("occluding_mask", None):  
-                obj["occluding_mask"] = load_segm(anno, "occluding_mask")
-            if anno.get("occluder_mask", None):  
-                obj["occluder_mask"] = load_segm(anno, "occluder_mask")
             obj["occluded_rate"] = anno.get("occluded_rate", None)
-            obj["occluding_rate"] = anno.get("occluding_rate", None)
 
             keypts = anno.get("keypoints", None)
             if keypts:  # list[int]
@@ -204,15 +200,6 @@ Category ids in annotations are not in [1, #categories]! We'll apply a mapping f
                 obj["keypoints"] = keypts
 
             obj["bbox_mode"] = BoxMode.XYWH_ABS
-            # if id_map:
-            #     annotation_category_id = obj["category_id"]
-            #     try:
-            #         obj["category_id"] = id_map[annotation_category_id]
-            #     except KeyError as e:
-            #         raise KeyError(
-            #             f"Encountered category_id={annotation_category_id} "
-            #             "but this id does not exist in 'categories' of the json file."
-            #         ) from e
             obj["category_id"] = 0
             objs.append(obj)
         record["annotations"] = objs
@@ -231,13 +218,13 @@ Category ids in annotations are not in [1, #categories]! We'll apply a mapping f
 
 if __name__ == "__main__":
     """
-    Test the uas json dataset loader.
+    Test the uoais json dataset loader.
 
     Usage:
-        python -m detectron2.data.datasets.uas \
+        python -m detectron2.data.datasets.uoais \
             path/to/json path/to/image_root dataset_name
 
-        "dataset_name" can be "uas_val", or other
+        "dataset_name" can be "uoais_val", or other
         pre-registered ones
     """
     from detectron2.utils.logger import setup_logger
@@ -249,10 +236,10 @@ if __name__ == "__main__":
     assert sys.argv[3] in DatasetCatalog.list()
     meta = MetadataCatalog.get(sys.argv[3])
 
-    dicts = load_uas_json(sys.argv[1], sys.argv[2], sys.argv[3])
+    dicts = load_uoais_json(sys.argv[1], sys.argv[2], sys.argv[3])
     logger.info("Done loading {} samples.".format(len(dicts)))
 
-    dirname = "uas-data-vis"
+    dirname = "uoais-data-vis"
     os.makedirs(dirname, exist_ok=True)
     for d in tqdm(dicts):
         img = np.array(Image.open(d["file_name"]))
