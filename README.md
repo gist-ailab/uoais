@@ -66,22 +66,7 @@ python tools/run_on_OSD.py --dataset-path ./sample_data --config-file configs/R5
 ```
 
 
-### Run with Kinect Azure
-
-[Azure-Kinect-Sensor-SDK](https://github.com/microsoft/Azure-Kinect-Sensor-SDK) and [pyk4a](https://github.com/etiennedub/pyk4a) are required.
-
-```
-# UOAIS-Net (RGB-D) + CG-Net (foreground segmentation)
-python tools/k4a_demo.py --use-cgnet --config-file configs/R50_rgbdconcat_mlc_occatmask_hom_concat.yaml
-UOAIS-Net (depth) + CG-Net (foreground segmentation)
-python tools/k4a_demo.py --use-cgnet --config-file configs/R50_depth_mlc_occatmask_hom_concat.yaml
-# UOAIS-Net (RGB-D)
-python tools/k4a_demo.py --config-file configs/R50_rgbdconcat_mlc_occatmask_hom_concat.yaml
-# UOAIS-Net (depth)
-python tools/k4a_demo.py --config-file configs/R50_depth_mlc_occatmask_hom_concat.yaml
-```
-
-### ROS nodes
+### Run with ROS
 
 1. Realsense D-435 ([realsense-ros](https://github.com/IntelRealSense/realsense-ros) is required.)
 ```
@@ -118,6 +103,36 @@ roslaunch uoais uoais_k4a.launch
 - `ransac_threshold` (`float`): max distance a point can be from the plane model
 
 
+
+### Run without ROS
+
+
+1. Realsense D-435 ([librealsense](https://github.com/IntelRealSense/librealsense) and [pyrealsense2](https://pypi.org/project/pyrealsense2/) are required.)
+
+```
+# UOAIS-Net (RGB-D) + CG-Net (foreground segmentation)
+python tools/rs_demo.py --use-cgnet --config-file configs/R50_rgbdconcat_mlc_occatmask_hom_concat.yaml
+UOAIS-Net (depth) + CG-Net (foreground segmentation)
+python tools/rs_demo.py --use-cgnet --config-file configs/R50_depth_mlc_occatmask_hom_concat.yaml
+# UOAIS-Net (RGB-D)
+python tools/rs_demo.py --config-file configs/R50_rgbdconcat_mlc_occatmask_hom_concat.yaml
+# UOAIS-Net (depth)
+python tools/rs_demo.py --config-file configs/R50_depth_mlc_occatmask_hom_concat.yaml
+```
+
+
+2. Azure Kinect ([Azure-Kinect-Sensor-SDK](https://github.com/microsoft/Azure-Kinect-Sensor-SDK) and [pyk4a](https://github.com/etiennedub/pyk4a) are required.)
+
+```
+# UOAIS-Net (RGB-D) + CG-Net (foreground segmentation)
+python tools/k4a_demo.py --use-cgnet --config-file configs/R50_rgbdconcat_mlc_occatmask_hom_concat.yaml
+UOAIS-Net (depth) + CG-Net (foreground segmentation)
+python tools/k4a_demo.py --use-cgnet --config-file configs/R50_depth_mlc_occatmask_hom_concat.yaml
+# UOAIS-Net (RGB-D)
+python tools/k4a_demo.py --config-file configs/R50_rgbdconcat_mlc_occatmask_hom_concat.yaml
+# UOAIS-Net (depth)
+python tools/k4a_demo.py --config-file configs/R50_depth_mlc_occatmask_hom_concat.yaml
+```
 
 
 ## Train & Evaluation

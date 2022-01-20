@@ -200,8 +200,8 @@ class UOAIS():
             bbox = RegionOfInterest()
             bbox.x_offset = int(pred_bboxes[i][0])
             bbox.y_offset = int(pred_bboxes[i][1])
-            bbox.width = int(pred_bboxes[i][2])
-            bbox.height = int(pred_bboxes[i][3])
+            bbox.width = int(pred_bboxes[i][0]-pred_bboxes[i][2])
+            bbox.height = int(pred_bboxes[i][1]-pred_bboxes[i][3])
             results.bboxes.append(bbox)
             results.visible_masks.append(self.cv_bridge.cv2_to_imgmsg(
                                         np.uint8(pred_visibles[i]), encoding="mono8"))
