@@ -207,6 +207,7 @@ This repository is released under the MIT license.
 The codes of this repository are built upon the following open sources. Thanks to the authors for sharing the code!
 - Instance segmentation based on [Detectron2](https://github.com/facebookresearch/detectron2) and [AdelaiDet](https://github.com/aim-uofa/AdelaiDet)
 - Evaluation codes are modified from [4] [UCN](https://github.com/NVlabs/UnseenObjectClustering) and [5] [VRSP-Net](https://github.com/YutingXiao/Amodal-Segmentation-Based-on-Visible-Region-Segmentation-and-Shape-Prior). 
+- Synthetic dataset is generated with [6] [BlenderProc](https://github.com/DLR-RM/BlenderProc)
 
 
 ## Citation
@@ -224,9 +225,10 @@ If you use our work in a research project, please cite our work:
 
 ## References
 ```
-[1] Sun, Yao, et al. "CG-Net: Conditional GIS-Aware network for individual building segmentation in VHR SAR images." IEEE Transactions on Geoscience and Remote Sensing (2021).
+[1] SUN, Yao, et al. Cg-net: Conditional gis-aware network for individual building segmentation in vhr sar images. IEEE Transactions on Geoscience and Remote Sensing, 2021, 60: 1-15.
 [2] Richtsfeld, Andreas, et al. "Segmentation of unknown objects in indoor environments." 2012 IEEE/RSJ International Conference on Intelligent Robots and Systems. IEEE, 2012.
 [3] Suchi, Markus, et al. "EasyLabel: a semi-automatic pixel-wise object annotation tool for creating robotic RGB-D datasets." 2019 International Conference on Robotics and Automation (ICRA). IEEE, 2019.
 [4] Xiang, Yu, et al. "Learning rgb-d feature embeddings for unseen object instance segmentation." Conference on Robot Learning (CoRL). 2020.
 [5] Xiao, Yuting, et al. "Amodal Segmentation Based on Visible Region Segmentation and Shape Prior." Proceedings of the AAAI Conference on Artificial Intelligence. Vol. 35. No. 4. 2021.
+[6] DENNINGER, Maximilian, et al. Blenderproc. arXiv preprint arXiv:1911.01911, 2019.
 ```

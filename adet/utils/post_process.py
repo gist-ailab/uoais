@@ -69,7 +69,14 @@ def detector_postprocess(results, output_height, output_width, mask_threshold=0.
                 if int(pred_occlusion) == 0:
                     results.pred_occluded_masks[i] = torch.zeros_like(results.pred_occluded_masks[i])
         else:
-            results.pred_occlusions = torch.zeros(0)
+            occlusions = []
+            for i in range(results.pred_masks.shape[0]):
+                ratio = torch.sum(results.pred_visible_masks[i]) / torch.sum(results.pred_masks[i])
+                if ratio > 0.95:
+                    occlusions.append(0)
+                else:
+                    occlusions.append(1)
+            results.pred_occlusions = torch.Tensor(occlusions)
         
     # scale bezier points
     if results.has("beziers"):

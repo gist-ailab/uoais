@@ -71,7 +71,8 @@ def eval_visible_on_OSD(args):
             uoais_input = depth_img
         elif cfg.INPUT.DEPTH and not cfg.INPUT.DEPTH_ONLY: 
             uoais_input = np.concatenate([rgb_img, depth_img], -1)        
-                
+        else:
+            uoais_input = rgb_img
         # laod GT (annotation) anno: [H, W]
         anno = imageio.imread(anno_path)
         anno = cv2.resize(anno, (W, H), interpolation=cv2.INTER_NEAREST)
@@ -224,7 +225,8 @@ def eval_amodal_occ_on_OSD(args):
             uoais_input = depth_img
         elif cfg.INPUT.DEPTH and not cfg.INPUT.DEPTH_ONLY: 
             uoais_input = np.concatenate([rgb_img, depth_img], -1)   
-       
+        else:
+            uoais_input = rgb_img
         # laod GT (amodal masks)
         img_name = os.path.basename(rgb_path)[:-4]
         annos = [] # [instance, IMG_H, IMG_W]
@@ -633,7 +635,9 @@ def eval_visible_on_OCID(args):
         if cfg.INPUT.DEPTH and cfg.INPUT.DEPTH_ONLY:
             uoais_input = depth_img
         elif cfg.INPUT.DEPTH and not cfg.INPUT.DEPTH_ONLY: 
-            uoais_input = np.concatenate([rgb_img, depth_img], -1)        
+            uoais_input = np.concatenate([rgb_img, depth_img], -1)      
+        else:
+            uoais_input = rgb_img
 
         # load GT (annotation) anno: [H, W]
         anno = imageio.imread(anno_path)
