@@ -200,7 +200,7 @@ python tools/run_on_OSD.py --use-cgnet --config-file configs/R50_rgbdconcat_mlc_
 
 ## License
 
-This repository is released under the MIT license.
+The source code of this repository is released only for academic use. See the [license](./LICENSE.md) file for details.
 
 ## Notes
 
