@@ -3,9 +3,9 @@
 Seunghyeok Back, Joosoon Lee, Taewon Kim, Sangjun Noh, Raeyoung Kang, Seongho Bak, Kyoobin Lee 
 
 
-This repository contains source codes for the paper "Unseen Object Amodal Instance Segmentation via Hierarchical Occlusion Modeling." (Accepted at ICRA 2022)
+This repository contains source codes for the paper "Unseen Object Amodal Instance Segmentation via Hierarchical Occlusion Modeling." (ICRA 2022)
 
-[[Paper]](https://arxiv.org/abs/2109.11103) [[Project Website]](https://sites.google.com/view/uoais) [[Video]](https://youtu.be/rDTmXu6BhIU) 
+[[Paper]](https://ieeexplore.ieee.org/abstract/document/9811646) [[ArXiv]](https://arxiv.org/abs/2109.11103) [[Project Website]](https://sites.google.com/view/uoais) [[Video]](https://youtu.be/rDTmXu6BhIU) 
 
 <img src="./imgs/demo.gif" height="300">
 
@@ -213,13 +213,13 @@ The codes of this repository are built upon the following open sources. Thanks t
 ## Citation
 If you use our work in a research project, please cite our work:
 ```
-@misc{back2021unseen,
-      title={Unseen Object Amodal Instance Segmentation via Hierarchical Occlusion Modeling}, 
-      author={Seunghyeok Back and Joosoon Lee and Taewon Kim and Sangjun Noh and Raeyoung Kang and Seongho Bak and Kyoobin Lee},
-      year={2021},
-      eprint={2109.11103},
-      archivePrefix={arXiv},
-      primaryClass={cs.RO}
+@inproceedings{back2022unseen,
+  title={Unseen object amodal instance segmentation via hierarchical occlusion modeling},
+  author={Back, Seunghyeok and Lee, Joosoon and Kim, Taewon and Noh, Sangjun and Kang, Raeyoung and Bak, Seongho and Lee, Kyoobin},
+  booktitle={2022 International Conference on Robotics and Automation (ICRA)},
+  pages={5085--5092},
+  year={2022},
+  organization={IEEE}
 }
 ```
 
