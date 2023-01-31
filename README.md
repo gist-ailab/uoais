@@ -45,7 +45,7 @@ pip install shapely torchfile opencv-python pyfastnoisesimd rapidfuzz termcolor
 ```
 6. Install [detectron2](https://detectron2.readthedocs.io/en/latest/tutorials/install.html)
 
-7. Build custom [AdelaiDet](https://github.com/aim-uofa/AdelaiDet)
+7. Build custom [AdelaiDet](https://github.com/aim-uofa/AdelaiDet) inside this repo (at the `uoais` folder)
 ```
 python setup.py build develop 
 ```
