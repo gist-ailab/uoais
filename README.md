@@ -21,7 +21,7 @@ This repository contains source codes for the paper "Unseen Object Amodal Instan
 
 ### Environment Setup
 
-Tested on Titan RTX with python 3.7, pytorch 1.8.0, torchvision 0.9.0, CUDA 10.2 / 11.1 and detectron2 v0.5 / v0.6
+Tested on Titan RTX with python 3.7, pytorch 1.8.0, torchvision 0.9.0, CUDA 10.2 / 11.1 and detectron2 v0.5 / v0.6 (try torch 1.9 if it does not work)
 
 1. Download source codes and checkpoints
 ```
